@@ -31,6 +31,3 @@ A simple and functional task management application built with Next.js (App Rout
 - **Infinite Scroll**: Implemented in the list using `useInfiniteQuery`. The list automatically fetches additional tasks as the user scrolls to the bottom of the page.
 - **Feedback and Error Handling**: We use the React Query `useMutation` feature to catch errors returned by the backend and alert the user, alongside frontend validations (Zod and HTML attributes).
 - **Componentization**: The application was split into smaller components (`TaskList` and `TaskForm`) to facilitate maintenance.
-
-## 💡 Tip: Less is more
-The application was developed focusing on solving the problem with the least complexity possible. There are no complex UI libraries or unnecessary robust setups; just pure Tailwind and the requested tools (Next.js + tRPC).
