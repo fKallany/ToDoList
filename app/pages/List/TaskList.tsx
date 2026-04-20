@@ -36,7 +36,7 @@ export default function TaskList({ initialData }: TaskListProps) {
     refetch,
   } = useInfiniteQuery({
     ...trpc.getTasks.infiniteQueryOptions(
-      { limit: 10 },
+      { limit: 5 },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
         initialCursor: null,
@@ -133,7 +133,12 @@ export default function TaskList({ initialData }: TaskListProps) {
             </div>
           ))
         )}
-        {isFetchingNextPage && <div className="text-center p-4">Loading more...</div>}
+        {isFetchingNextPage && (
+          <div className="flex justify-center items-center p-6 gap-3">
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
+            <span className="text-gray-600 font-medium">Loading more tasks...</span>
+          </div>
+        )}
         {!hasNextPage && tasks.length > 0 && (
           <div className="text-center text-gray-500 p-4">You have reached the end of the list.</div>
         )}

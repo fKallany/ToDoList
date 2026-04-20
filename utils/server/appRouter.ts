@@ -8,29 +8,40 @@ export type Task = {
   createdAt: number;
 };
 
+function generateTasks(amount: number): Task[] {
+  return Array.from({ length: amount }, (_, i) => {
+    const id = i + 1;
+
+    return {
+      id,
+      title: `Task ${id} - Feature ${id}`,
+      description: `This is the description for task ${id}`,
+      createdAt: Date.now() - (amount - id) * 10000,
+    };
+  });
+}
+
 // In-memory storage for tasks
-let tasks: Task[] = [
-  { id: 1, title: 'Study Next.js', description: 'Learn about App Router', createdAt: Date.now() - 500000 },
-  { id: 2, title: 'Implement tRPC', description: 'Configure tRPC with React Query', createdAt: Date.now() - 490000 },
-  { id: 3, title: 'Refactor API', description: 'Improve REST endpoints structure', createdAt: Date.now() - 480000 },
-  { id: 4, title: 'Fix login bug', description: 'Resolve token expiration issue', createdAt: Date.now() - 470000 },
-  { id: 5, title: 'Create dashboard UI', description: 'Design analytics components', createdAt: Date.now() - 460000 },
-  { id: 6, title: 'Optimize queries', description: 'Reduce database load time', createdAt: Date.now() - 450000 },
-  { id: 7, title: 'Write unit tests', description: 'Cover auth service logic', createdAt: Date.now() - 440000 },
-  { id: 8, title: 'Setup CI/CD', description: 'Configure GitHub Actions pipeline', createdAt: Date.now() - 430000 },
-  { id: 9, title: 'Add dark mode', description: 'Implement theme switching', createdAt: Date.now() - 420000 },
-  { id: 10, title: 'Improve SEO', description: 'Add meta tags and sitemap', createdAt: Date.now() - 410000 },
-];
+let tasks: Task[] = generateTasks(20);
 
 export const appRouter = router({
   // List Tasks
   getTasks: publicProcedure
-    .input(z.object({ limit: z.number().min(1).max(50).nullish(), cursor: z.number().nullish() }).optional())
-    .query(({ input }) => {
+    .input(z.object({
+      limit: z.number().min(1).max(50).nullish(),
+      cursor: z.number().nullish()
+    }).optional())
+    .query(async ({ input }) => {
       // Fetches a paginated list of tasks based on a cursor
       // Sorts tasks by descending creation date
-      const limit = input?.limit ?? 10;
+      const limit = input?.limit ?? 5;
       const { cursor } = input ?? {};
+
+      // Add an artificial 2-second delay for pagination requests (when cursor is present)
+      // to demonstrate visual loading and test data fetching limits
+      if (cursor !== undefined && cursor !== null) {
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      }
 
       const sortedTasks = [...tasks].sort((a, b) => b.createdAt - a.createdAt);
 

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import type { Task } from '@/utils/server/appRouter';
 
 type TaskFormProps = {
+  // Determines if a task is being edited. If provided, the form switches to edit mode; otherwise, it handles task creation.
   taskToEdit?: Task | null;
   onSuccess?: () => void;
   onCancel?: () => void;
@@ -30,7 +31,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
     }
   }, [taskToEdit]);
 
-  const createMutation = useMutation(trpc.createTask.mutationOptions({
+  const createTask = useMutation(trpc.createTask.mutationOptions({
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: trpc.getTasks.queryKey() });
       setTitle('');
@@ -68,11 +69,11 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
     if (taskToEdit) {
       updateMutation.mutate({ id: taskToEdit.id, title, description });
     } else {
-      createMutation.mutate({ title, description });
+      createTask.mutate({ title, description });
     }
   };
 
-  const isPending = createMutation.isPending || updateMutation.isPending;
+  const isPending = createTask.isPending || updateMutation.isPending;
 
   return (
     <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200">

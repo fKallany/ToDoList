@@ -5,7 +5,7 @@ export default async function Home() {
   // Main entry point for the application
   // Fetches initial task data for server-side rendering
   // SSR: Pre-loads the initial tasks directly from the tRPC router
-  const initialData = await appRouter.createCaller({}).getTasks({ limit: 10 });
+  const initialData = await appRouter.createCaller({}).getTasks({ limit: 5 });
 
   return (
     <div className="flex flex-col flex-1 items-center bg-zinc-50 dark:bg-zinc-900 min-h-screen">
