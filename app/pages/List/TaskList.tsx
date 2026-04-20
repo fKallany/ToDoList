@@ -59,7 +59,7 @@ export default function TaskList({ initialData }: TaskListProps) {
     }
   }));
 
-  const handleDelete = (id: string) => {
+  const handleDelete = (id: number) => {
     // Prompts user for confirmation before deleting a task
     // Triggers delete mutation if confirmed
     if (confirm('Are you sure you want to delete this task?')) {
