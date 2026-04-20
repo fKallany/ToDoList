@@ -2,7 +2,7 @@
 
 import { useTRPC } from '@/utils/client/trpc';
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import TaskForm from '../Form';
 import type { Task } from '@/utils/server/appRouter';
 
@@ -20,6 +20,8 @@ export default function TaskList({ initialData }: TaskListProps) {
   const queryClient = useQueryClient();
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [isMounted, setIsMounted] = useState(false);
+  const [isScroll, setIsScroll] = useState(false);
+  const loadingRef = useRef(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -68,20 +70,33 @@ export default function TaskList({ initialData }: TaskListProps) {
   };
 
   useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
     const handleScroll = () => {
       // Handles infinite scrolling behavior
       // Fetches the next page of tasks when scrolling near the bottom
       if (
         window.innerHeight + window.scrollY >= document.body.offsetHeight - 100 &&
         hasNextPage &&
-        !isFetchingNextPage
+        !isFetchingNextPage &&
+        !loadingRef.current
       ) {
-        fetchNextPage();
+        loadingRef.current = true;
+        setIsScroll(true);
+        timeoutId = setTimeout(() => {
+          fetchNextPage().finally(() => {
+            loadingRef.current = false;
+            setIsScroll(false);
+          });
+        }, 2000);
       }
     };
 
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearTimeout(timeoutId);
+    };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isLoading) return <div className="text-center p-4">Loading tasks...</div>;
@@ -133,7 +148,7 @@ export default function TaskList({ initialData }: TaskListProps) {
             </div>
           ))
         )}
-        {isFetchingNextPage && (
+        {(isFetchingNextPage || isScroll) && (
           <div className="flex justify-center items-center p-6 gap-3">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
             <span className="text-gray-600 font-medium">Loading more tasks...</span>

@@ -37,12 +37,6 @@ export const appRouter = router({
       const limit = input?.limit ?? 5;
       const { cursor } = input ?? {};
 
-      // Add an artificial 2-second delay for pagination requests (when cursor is present)
-      // to demonstrate visual loading and test data fetching limits
-      if (cursor !== undefined && cursor !== null) {
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-      }
-
       const sortedTasks = [...tasks].sort((a, b) => b.createdAt - a.createdAt);
 
       const startIndex = cursor ?? 0;
