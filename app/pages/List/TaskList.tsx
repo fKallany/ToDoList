@@ -117,12 +117,12 @@ export default function TaskList({ initialData }: TaskListProps) {
       />
 
       <div className="flex flex-col gap-4 mt-8">
-        <h2 className="text-xl font-semibold">Task List ({tasks.length})</h2>
+        <h2 className="text-xl font-bold text-white">Task List ({tasks.length})</h2>
         {tasks.length === 0 ? (
           <p className="text-gray-500 italic">No tasks found.</p>
         ) : (
           tasks.map((task) => (
-            <div key={task.id} className="p-4 border border-gray-200 rounded-lg shadow-sm bg-white flex flex-col sm:flex-row justify-between gap-4">
+            <div key={task.id} className="p-4 border border-gray-200 rounded-lg bg-white flex flex-col sm:flex-row justify-between gap-4 shadow-[6px_6px_12px_0px_rgba(0,0,0,0.3)]">
               <div className="flex-1">
                 <h3 className="font-bold text-lg">{task.title}</h3>
                 {task.description && <p className="text-gray-600 mt-1">{task.description}</p>}

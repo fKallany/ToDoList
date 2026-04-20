@@ -76,7 +76,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
   const isPending = createTask.isPending || updateMutation.isPending;
 
   return (
-    <div className="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-200">
+    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-[6px_6px_12px_0px_rgba(0,0,0,0.3)]">
       <h2 className="text-xl font-bold mb-4">
         {taskToEdit ? 'Edit Task' : 'New Task'}
       </h2>

@@ -9,7 +9,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col flex-1 items-center bg-zinc-50 dark:bg-zinc-900 min-h-screen">
-      <main className="flex flex-1 w-full flex-col items-center py-12 px-6 bg-white dark:bg-zinc-950">
+      <main className="flex flex-1 w-full flex-col items-center py-12 px-6 bg-white dark:bg-zinc-500">
         <List initialData={initialData} />
       </main>
     </div>
