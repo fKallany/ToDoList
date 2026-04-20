@@ -20,6 +20,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [titleError, setTitleError] = useState(false);
 
   useEffect(() => {
     if (taskToEdit) {
@@ -37,6 +38,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
       setTitle('');
       setDescription('');
       setErrorMsg('');
+      setTitleError(false);
       if (onSuccess) onSuccess();
       alert('Task created successfully!');
     },
@@ -49,6 +51,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: trpc.getTasks.queryKey() });
       setErrorMsg('');
+      setTitleError(false);
       if (onSuccess) onSuccess();
       alert('Task updated successfully!');
     },
@@ -62,9 +65,11 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
     // Validates the title and calls the appropriate mutation
     e.preventDefault();
     if (!title.trim()) {
-      setErrorMsg('The title is required.');
+      setTitleError(true);
       return;
     }
+
+    setTitleError(false);
 
     if (taskToEdit) {
       updateMutation.mutate({ id: taskToEdit.id, title, description });
@@ -87,18 +92,26 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
           <input
             id="title"
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            onChange={(e) => {
+              setTitle(e.target.value);
+              if (titleError && e.target.value.trim()) setTitleError(false);
+            }}
+            className={`w-full p-2 border rounded focus:ring-2 focus:outline-none transition-colors ${titleError
+              ? 'border-red-500 focus:ring-red-500 bg-red-50'
+              : 'border-gray-300 focus:ring-blue-500'
+              }`}
             placeholder="Ex: Study Next.js"
-            required
           />
+          {titleError && (
+            <p className="text-red-500 text-xs mt-1 font-medium">Please, fill out the title field.</p>
+          )}
         </div>
 
         <div>
@@ -109,7 +122,7 @@ export default function TaskForm({ taskToEdit, onSuccess, onCancel }: TaskFormPr
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:outline-none focus:ring-blue-500"
             placeholder="Ex: Read the official documentation"
             rows={3}
           />

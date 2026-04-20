@@ -99,7 +99,7 @@ export default function TaskList({ initialData }: TaskListProps) {
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (isLoading) return <div className="text-center p-4">Loading tasks...</div>;
+  if (isLoading) return <div className="text-center p-4 text-white">Loading tasks...</div>;
   if (isError) return <div className="text-red-500 p-4">Error loading tasks: {error?.message}</div>;
 
   const tasks = data?.pages.flatMap((page) => page.tasks) ?? [];
@@ -119,7 +119,7 @@ export default function TaskList({ initialData }: TaskListProps) {
       <div className="flex flex-col gap-4 mt-8">
         <h2 className="text-xl font-bold text-white">Task List ({tasks.length})</h2>
         {tasks.length === 0 ? (
-          <p className="text-gray-500 italic">No tasks found.</p>
+          <p className="text-white italic">No tasks found.</p>
         ) : (
           tasks.map((task) => (
             <div key={task.id} className="p-4 border border-gray-200 rounded-lg bg-white flex flex-col sm:flex-row justify-between gap-4 shadow-[6px_6px_12px_0px_rgba(0,0,0,0.3)]">
@@ -150,12 +150,12 @@ export default function TaskList({ initialData }: TaskListProps) {
         )}
         {(isFetchingNextPage || isScroll) && (
           <div className="flex justify-center items-center p-6 gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-            <span className="text-gray-600 font-medium">Loading more tasks...</span>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+            <span className="text-white font-medium">Loading more tasks...</span>
           </div>
         )}
         {!hasNextPage && tasks.length > 0 && (
-          <div className="text-center text-gray-500 p-4">You have reached the end of the list.</div>
+          <div className="text-center text-white font-medium p-4">You have reached the end of the list.</div>
         )}
       </div>
     </div>
